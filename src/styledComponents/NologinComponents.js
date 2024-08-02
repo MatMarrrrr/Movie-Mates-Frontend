@@ -53,7 +53,7 @@ export const AuthInput = styled.input`
   padding: 7px 20px;
   box-sizing: border-box;
 
-  @media(max-width: 770px){
+  @media (max-width: 770px) {
     font-size: 22px;
   }
 `;
@@ -83,7 +83,12 @@ export const AuthButton = styled.button`
     transition-duration: 0.3s;
   }
 
-  @media(max-width: 770px){
+  @media (max-width: 770px) {
     font-size: 20px;
   }
+`;
+
+export const AuthError = styled.p`
+  color: #ff0000;
+  font-weight: 500;
 `;
