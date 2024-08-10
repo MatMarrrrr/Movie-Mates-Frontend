@@ -16,10 +16,20 @@ import {
 import { ShowPasswordButton } from "./../components/ShowPasswordButton";
 import { AuthOr } from "./../components/AuthOr";
 import { GoogleButton } from "../components/GoogleButton";
+import { useUser } from "../contexts/UserContext";
+import { useNavigate } from "react-router-dom";
 
 export const RegisterPage = () => {
   const [shownPassword, setShownPassword] = useState(false);
   const [error, setError] = useState(null);
+  const { user, registerUser } = useUser();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     AOS.init({ duration: 700 });
@@ -32,16 +42,23 @@ export const RegisterPage = () => {
       password: "",
     },
     validationSchema: registerSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      const result = await registerUser(values);
+
+      if (!result.success) {
+        setError(result.message);
+      } else {
+        setError(null);
+        navigate("/");
+      }
     },
   });
 
   const getFirstError = () => {
-    if (registerForm.touched.identifier && registerForm.errors.login) {
+    if (registerForm.touched.login && registerForm.errors.login) {
       return registerForm.errors.login;
     }
-    if (registerForm.touched.password && registerForm.errors.email) {
+    if (registerForm.touched.email && registerForm.errors.email) {
       return registerForm.errors.email;
     }
     if (registerForm.touched.identifier && registerForm.errors.password) {
@@ -51,7 +68,7 @@ export const RegisterPage = () => {
   };
 
   useEffect(() => {
-    const formError = getFirstError(registerForm.errors, registerForm.touched);
+    const formError = getFirstError();
     setError(formError);
   }, [registerForm.touched, registerForm.errors]);
 

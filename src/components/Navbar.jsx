@@ -3,9 +3,13 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import logo from "./../assets/logo.svg";
 import { BurgerButton } from "./BurgerButton";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../contexts/UserContext";
 
 export const Navbar = () => {
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
+  const { user, logoutUser } = useUser();
+  const navigate = useNavigate();
 
   const handleBurgerClick = () => {
     setIsBurgerOpen(!isBurgerOpen);
@@ -15,6 +19,11 @@ export const Navbar = () => {
     setIsBurgerOpen(false);
   };
 
+  const handleLogoutClick = () => {
+    logoutUser();
+    navigate("/");
+  };
+
   return (
     <Wrapper>
       <StyledLink to="/">
@@ -22,17 +31,31 @@ export const Navbar = () => {
         <LogoText>Movie Mates</LogoText>
       </StyledLink>
 
-      <NologinButtonsContainer>
-        <SignInButton to="/login">Sign in</SignInButton>
-        <GettingStartedButton to="/register">Get Started</GettingStartedButton>
-      </NologinButtonsContainer>
+      {user ? (
+        <LoginButtonsContainer>
+          <LogoutButton onClick={handleLogoutClick}>Logout</LogoutButton>
+        </LoginButtonsContainer>
+      ) : (
+        <NologinButtonsContainer>
+          <SignInButton to="/login">Sign in</SignInButton>
+          <GettingStartedButton to="/register">
+            Get Started
+          </GettingStartedButton>
+        </NologinButtonsContainer>
+      )}
 
       <BurgerButton onClick={handleBurgerClick} open={isBurgerOpen} />
 
-      <NologinBurgerItems open={isBurgerOpen}>
-        <BurgerMenuItem onClick={handleBurgerMenuItemClick} to="/login">Sign in</BurgerMenuItem>
-        <BurgerMenuItem onClick={handleBurgerMenuItemClick} to="/register">Get Started</BurgerMenuItem>
-      </NologinBurgerItems>
+      {!user && (
+        <NologinBurgerItems open={isBurgerOpen}>
+          <BurgerMenuItem onClick={handleBurgerMenuItemClick} to="/login">
+            Sign in
+          </BurgerMenuItem>
+          <BurgerMenuItem onClick={handleBurgerMenuItemClick} to="/register">
+            Get Started
+          </BurgerMenuItem>
+        </NologinBurgerItems>
+      )}
     </Wrapper>
   );
 };
@@ -81,6 +104,15 @@ const NologinButtonsContainer = styled.div`
   }
 `;
 
+const LoginButtonsContainer = styled.div`
+  display: flex;
+  gap: 20px;
+
+  @media (max-width: 770px) {
+    display: none;
+  }
+`;
+
 const SignInButton = styled(Link)`
   color: #fff;
   background-color: transparent;
@@ -90,6 +122,25 @@ const SignInButton = styled(Link)`
   border-radius: 20px;
   cursor: pointer;
   text-decoration: none;
+  transition-duration: 0.3s;
+
+  &:hover {
+    transform: scale(1.03);
+    background-color: #fff;
+    color: #000;
+    transition-duration: 0.3s;
+  }
+`;
+
+const LogoutButton = styled.button`
+  color: #fff;
+  background-color: transparent;
+  border: none;
+  padding: 10px 15px;
+  font-weight: 500;
+  font-size: 18px;
+  border-radius: 20px;
+  cursor: pointer;
   transition-duration: 0.3s;
 
   &:hover {
@@ -130,7 +181,7 @@ const NologinBurgerItems = styled.div`
   transition-duration: 0.4s;
   white-space: nowrap;
 
-  @media(max-width: 770px){
+  @media (max-width: 770px) {
     display: flex;
   }
 `;

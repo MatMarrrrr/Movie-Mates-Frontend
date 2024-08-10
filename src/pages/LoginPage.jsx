@@ -3,6 +3,8 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { useFormik } from "formik";
 import { loginSchema } from "../validationRules/LoginSchema";
+import { useUser } from "../contexts/UserContext";
+import { useNavigate } from "react-router-dom";
 
 import {
   Wrapper,
@@ -21,6 +23,14 @@ import { GoogleButton } from "../components/GoogleButton";
 export const LoginPage = () => {
   const [shownPassword, setShownPassword] = useState(false);
   const [error, setError] = useState(null);
+  const { user, loginUser } = useUser();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     AOS.init({ duration: 700 });
@@ -32,8 +42,15 @@ export const LoginPage = () => {
       password: "",
     },
     validationSchema: loginSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      const result = await loginUser(values);
+
+      if (!result.success) {
+        setError(result.message);
+      } else {
+        setError(null);
+        navigate("/");
+      }
     },
   });
 
