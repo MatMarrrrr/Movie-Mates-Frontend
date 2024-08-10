@@ -22,6 +22,7 @@ export const Navbar = () => {
   const handleLogoutClick = () => {
     logoutUser();
     navigate("/");
+    setIsBurgerOpen(false);
   };
 
   return (
@@ -46,16 +47,22 @@ export const Navbar = () => {
 
       <BurgerButton onClick={handleBurgerClick} open={isBurgerOpen} />
 
-      {!user && (
-        <NologinBurgerItems open={isBurgerOpen}>
-          <BurgerMenuItem onClick={handleBurgerMenuItemClick} to="/login">
-            Sign in
+      <BurgerItems open={isBurgerOpen}>
+        {!user ? (
+          <>
+            <BurgerMenuItem onClick={handleBurgerMenuItemClick} to="/login">
+              Sign in
+            </BurgerMenuItem>
+            <BurgerMenuItem onClick={handleBurgerMenuItemClick} to="/register">
+              Get Started
+            </BurgerMenuItem>
+          </>
+        ) : (
+          <BurgerMenuItem as="button" onClick={handleLogoutClick}>
+            Logout
           </BurgerMenuItem>
-          <BurgerMenuItem onClick={handleBurgerMenuItemClick} to="/register">
-            Get Started
-          </BurgerMenuItem>
-        </NologinBurgerItems>
-      )}
+        )}
+      </BurgerItems>
     </Wrapper>
   );
 };
@@ -168,12 +175,11 @@ const GettingStartedButton = styled(Link)`
   }
 `;
 
-const NologinBurgerItems = styled.div`
+const BurgerItems = styled.div`
   position: absolute;
   right: 0px;
   top: 80px;
   width: ${({ open }) => (open ? "50%" : "0px")};
-  background-color: #0f0f0f;
   z-index: 2;
   display: none;
   flex-direction: column;
@@ -189,6 +195,7 @@ const NologinBurgerItems = styled.div`
 const BurgerMenuItem = styled(Link)`
   color: #fff;
   text-decoration: none;
+  background-color: #0f0f0f;
   padding: 22px;
   font-size: 20px;
 
