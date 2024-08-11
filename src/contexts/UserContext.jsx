@@ -28,7 +28,7 @@ export const UserProvider = ({ children }) => {
     } else {
       setUserLoading(false);
     }
-  }, []);
+  }, [apiURL]);
 
   const loginUser = async (data) => {
     try {
@@ -67,10 +67,16 @@ export const UserProvider = ({ children }) => {
     setUser(undefined);
   };
 
-
   return (
     <UserContext.Provider
-      value={{ user, userLoading, loginUser, registerUser, logoutUser }}
+      value={{
+        user,
+        setUser,
+        userLoading,
+        loginUser,
+        registerUser,
+        logoutUser,
+      }}
     >
       {children}
     </UserContext.Provider>

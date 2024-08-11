@@ -7,6 +7,7 @@ import { Navbar } from "./components/Navbar";
 import { RegisterPage } from "./pages/RegisterPage";
 import { LoginPage } from "./pages/LoginPage";
 import { useUser } from "./contexts/UserContext";
+import { GoogleCallback } from "./pages/GoogleCallback";
 
 function App() {
   const { user, userLoading } = useUser();
@@ -31,6 +32,7 @@ function App() {
         <Route path="/" element={user ? <MainPage /> : <LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/google-callback" element={<GoogleCallback />} />
       </Routes>
     </BrowserRouter>
   );

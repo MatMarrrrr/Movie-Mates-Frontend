@@ -1,9 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 import googleLogo from "./../assets/googleLogo.svg";
+
 export const GoogleButton = () => {
+  const apiURL = import.meta.env.VITE_API_URL;
+
+  const handleContinueWithGoogleClick = () => {
+    window.location.href = `${apiURL}/auth/google`;
+  };
+
   return (
-    <GoogleButtonContainer>
+    <GoogleButtonContainer onClick={handleContinueWithGoogleClick}>
       <GoogleButtonIcon src={googleLogo} />
       <GoogleButtonText>Continue with Google</GoogleButtonText>
     </GoogleButtonContainer>
