@@ -27,11 +27,10 @@ const GoogleButtonContainer = styled.div`
   cursor: pointer;
   gap: 10px;
   margin-bottom: 5px;
-  transition-duration: 0.3s;
+  transition: transform 0.3s ease;
 
   &:hover {
     transform: scale(1.03);
-    transition-duration: 0.3s;
   }
 `;
 

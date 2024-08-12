@@ -75,12 +75,11 @@ export const AuthButton = styled.button`
   background-color: #474141;
   color: #fff;
   border: none;
-  transition-duration: 0.3s;
+  transition: transform 0.3s ease;
   cursor: pointer;
 
   &:hover {
     transform: scale(1.03);
-    transition-duration: 0.3s;
   }
 
   @media (max-width: 770px) {

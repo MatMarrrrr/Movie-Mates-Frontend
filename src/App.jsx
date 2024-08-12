@@ -11,7 +11,8 @@ import { GoogleCallback } from "./pages/GoogleCallback";
 import axios from "axios";
 
 function App() {
-  const { user, setUser, userLoading, setUserLoading } = useUser();
+  const { user, setUser, setUserToken, userLoading, setUserLoading } =
+    useUser();
   const [isMinimumLoadingTime, setIsMinimumLoadingTime] = useState(true);
   const apiURL = import.meta.env.VITE_API_URL;
 
@@ -22,6 +23,7 @@ function App() {
 
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
+      setUserToken(storedToken);
       axios
         .get(`${apiURL}/user`, {
           headers: {
@@ -34,8 +36,8 @@ function App() {
           } else {
             localStorage.removeItem("token");
           }
-        })
-        .finally(() => setUserLoading(false));
+          setUserLoading(false);
+        });
     } else {
       setUserLoading(false);
     }

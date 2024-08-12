@@ -69,7 +69,6 @@ export const Navbar = () => {
 
 const Wrapper = styled.div`
   height: 80px;
-  width: 100vw;
   background-color: #0f0f0f;
   display: flex;
   align-items: center;
@@ -129,13 +128,12 @@ const SignInButton = styled(Link)`
   border-radius: 20px;
   cursor: pointer;
   text-decoration: none;
-  transition-duration: 0.3s;
+  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
     transform: scale(1.03);
     background-color: #fff;
     color: #000;
-    transition-duration: 0.3s;
   }
 `;
 
@@ -148,13 +146,12 @@ const LogoutButton = styled.button`
   font-size: 18px;
   border-radius: 20px;
   cursor: pointer;
-  transition-duration: 0.3s;
+  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
     transform: scale(1.03);
     background-color: #fff;
     color: #000;
-    transition-duration: 0.3s;
   }
 `;
 
@@ -167,11 +164,10 @@ const GettingStartedButton = styled(Link)`
   border-radius: 20px;
   cursor: pointer;
   text-decoration: none;
-  transition-duration: 0.3s;
+  transition: transform 0.3s ease;
 
   &:hover {
     transform: scale(1.03);
-    transition-duration: 0.3s;
   }
 `;
 

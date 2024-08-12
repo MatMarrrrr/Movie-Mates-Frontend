@@ -5,6 +5,7 @@ export const UserContext = createContext(undefined);
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(undefined);
+  const [userToken, setUserToken] = useState("");
   const [userLoading, setUserLoading] = useState(true);
   const apiURL = import.meta.env.VITE_API_URL;
 
@@ -12,6 +13,7 @@ export const UserProvider = ({ children }) => {
     try {
       const response = await axios.post(`${apiURL}/login`, data);
       localStorage.setItem("token", response.data.token);
+      setUserToken(response.data.token);
       console.log(response);
       setUser(response.data.user);
       return { success: true };
@@ -28,6 +30,7 @@ export const UserProvider = ({ children }) => {
     try {
       const response = await axios.post(`${apiURL}/register`, data);
       localStorage.setItem("token", response.data.token);
+      setUserToken(response.data.token);
       console.log(response);
       setUser(response.data.user);
       return { success: true };
@@ -50,6 +53,8 @@ export const UserProvider = ({ children }) => {
       value={{
         user,
         setUser,
+        userToken,
+        setUserToken,
         userLoading,
         setUserLoading,
         loginUser,
