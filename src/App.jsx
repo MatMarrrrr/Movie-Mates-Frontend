@@ -8,18 +8,40 @@ import { RegisterPage } from "./pages/RegisterPage";
 import { LoginPage } from "./pages/LoginPage";
 import { useUser } from "./contexts/UserContext";
 import { GoogleCallback } from "./pages/GoogleCallback";
+import axios from "axios";
 
 function App() {
-  const { user, userLoading } = useUser();
+  const { user, setUser, userLoading, setUserLoading } = useUser();
   const [isMinimumLoadingTime, setIsMinimumLoadingTime] = useState(true);
+  const apiURL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMinimumLoadingTime(false);
     }, 1000);
 
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      axios
+        .get(`${apiURL}/user`, {
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+          },
+        })
+        .then((response) => {
+          if (response.data) {
+            setUser(response.data);
+          } else {
+            localStorage.removeItem("token");
+          }
+        })
+        .finally(() => setUserLoading(false));
+    } else {
+      setUserLoading(false);
+    }
+
     return () => clearTimeout(timer);
-  }, []);
+  }, [apiURL, setUser, setUserLoading]);
 
   if (userLoading || isMinimumLoadingTime) {
     return <PageLoader />;

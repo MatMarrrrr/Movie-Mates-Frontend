@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 import axios from "axios";
 
 export const UserContext = createContext(undefined);
@@ -7,28 +7,6 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(undefined);
   const [userLoading, setUserLoading] = useState(true);
   const apiURL = import.meta.env.VITE_API_URL;
-
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      axios
-        .get(`${apiURL}/user`, {
-          headers: {
-            Authorization: `Bearer ${storedToken}`,
-          },
-        })
-        .then((response) => {
-          if (response.data) {
-            setUser(response.data);
-          } else {
-            localStorage.removeItem("token");
-          }
-        })
-        .finally(() => setUserLoading(false));
-    } else {
-      setUserLoading(false);
-    }
-  }, [apiURL]);
 
   const loginUser = async (data) => {
     try {
@@ -73,6 +51,7 @@ export const UserProvider = ({ children }) => {
         user,
         setUser,
         userLoading,
+        setUserLoading,
         loginUser,
         registerUser,
         logoutUser,
