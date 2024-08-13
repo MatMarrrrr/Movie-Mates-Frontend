@@ -11,32 +11,34 @@ export const MainPage = () => {
   const [movies, setMovies] = useState([]);
   const [moviesLoading, setMoviesLoading] = useState(true);
   const [moreMoviesLoading, setMoreMoviesLoading] = useState(false);
-  const { user, userToken } = useUser();
   const [trendingScrollPosition, setTrendingScrollPosition] = useState(0);
   const [trendingMoviesPage, setTrendingMoviesPage] = useState(1);
   const moviesListRef = useRef(null);
   const apiURL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
+    const storedToken = localStorage.getItem("token");
     axios
       .get(`${apiURL}/movies/trending/day/${trendingMoviesPage}`, {
         headers: {
-          Authorization: `Bearer ${userToken}`,
+          Authorization: `Bearer ${storedToken}`,
         },
       })
       .then((response) => {
         console.log(response.data);
         setMovies(response.data);
         setMoviesLoading(false);
+        setMoreMoviesLoading(false);
       });
-  }, [apiURL, userToken]);
+  }, [apiURL]);
 
   useEffect(() => {
+    const storedToken = localStorage.getItem("token");
     setMoreMoviesLoading(true);
     axios
       .get(`${apiURL}/movies/trending/day/${trendingMoviesPage}`, {
         headers: {
-          Authorization: `Bearer ${userToken}`,
+          Authorization: `Bearer ${storedToken}`,
         },
       })
       .then((response) => {

@@ -9,6 +9,10 @@ import { LoginPage } from "./pages/LoginPage";
 import { useUser } from "./contexts/UserContext";
 import { GoogleCallback } from "./pages/GoogleCallback";
 import axios from "axios";
+import { FilmsPage } from "./pages/FilmsPage";
+import { TvSeriesPage } from "./pages/TvSeriesPage";
+import { SearchPage } from "./pages/SearchPage";
+import { ProfilePage } from "./pages/ProfilePage";
 
 function App() {
   const { user, setUser, setUserToken, userLoading, setUserLoading } =
@@ -56,6 +60,10 @@ function App() {
         <Route path="/" element={user ? <MainPage /> : <LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/films" element={<FilmsPage />} />
+        <Route path="/tvseries" element={<TvSeriesPage />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/google-callback" element={<GoogleCallback />} />
       </Routes>
     </BrowserRouter>

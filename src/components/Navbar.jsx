@@ -2,14 +2,17 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import logo from "./../assets/logo.svg";
+import dropdownIcon from "./../assets/dropdownIcon.svg";
 import { BurgerButton } from "./BurgerButton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 
 export const Navbar = () => {
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, logoutUser } = useUser();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleBurgerClick = () => {
     setIsBurgerOpen(!isBurgerOpen);
@@ -21,8 +24,13 @@ export const Navbar = () => {
 
   const handleLogoutClick = () => {
     logoutUser();
+    setIsDropdownOpen(false);
     navigate("/");
     setIsBurgerOpen(false);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   return (
@@ -33,9 +41,54 @@ export const Navbar = () => {
       </StyledLink>
 
       {user ? (
-        <LoginButtonsContainer>
-          <LogoutButton onClick={handleLogoutClick}>Logout</LogoutButton>
-        </LoginButtonsContainer>
+        <>
+          <LoginHeaderLinksContainer>
+            <LoginHeaderLink
+              to="/films"
+              isPageActive={location.pathname === "/films"}
+            >
+              Films
+            </LoginHeaderLink>
+            <LoginHeaderLink
+              to="/tvseries"
+              isPageActive={location.pathname === "/tvseries"}
+            >
+              TV Series
+            </LoginHeaderLink>
+            <LoginHeaderLink
+              to="/search"
+              isPageActive={location.pathname === "/search"}
+            >
+              Search
+            </LoginHeaderLink>
+          </LoginHeaderLinksContainer>
+
+          <LoginButtonsContainer>
+            <NicknameText>{user.login}</NicknameText>
+            <ProfileContainer onClick={toggleDropdown}>
+              {user.avatar_url !== null ? (
+                <ProfileImage src={user.avatar_url} />
+              ) : (
+                <ProfileLetter>
+                  {user.login.charAt(0).toUpperCase()}
+                </ProfileLetter>
+              )}
+              <ProfileDropdownIcon src={dropdownIcon} />
+              <ProfileDropdown dropdownOpen={isDropdownOpen}>
+                <ProfileDropdownItem
+                  to="/profile"
+                  isPageActive={location.pathname === "/profile"}
+                  onClick={() => {
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  Profile
+                </ProfileDropdownItem>
+                <LogoutButton onClick={handleLogoutClick}>Logout</LogoutButton>
+              </ProfileDropdown>
+            </ProfileContainer>
+          </LoginButtonsContainer>
+        </>
       ) : (
         <NologinButtonsContainer>
           <SignInButton to="/login">Sign in</SignInButton>
@@ -112,10 +165,125 @@ const NologinButtonsContainer = styled.div`
 
 const LoginButtonsContainer = styled.div`
   display: flex;
+  align-items: center;
   gap: 20px;
 
   @media (max-width: 770px) {
     display: none;
+  }
+`;
+
+const ProfileContainer = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+`;
+
+const ProfileImage = styled.img`
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+`;
+
+const ProfileLetter = styled.div`
+  color: #fff;
+  height: 50px;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #5c27b6;
+  border-radius: 50%;
+`;
+
+const NicknameText = styled.p`
+  color: #fff;
+  font-size: 18px;
+`;
+
+const ProfileDropdown = styled.div`
+  background-color: #333;
+  position: absolute;
+  top: 60px;
+  right: 0;
+  width: 150px;
+  border-radius: 8px;
+  transform: ${({ dropdownOpen }) => (dropdownOpen ? "scale(1)" : "scale(0)")};
+  transform-origin: top right;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  opacity: ${({ dropdownOpen }) => (dropdownOpen ? 1 : 0)};
+
+  & > *:first-child {
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+  }
+
+  & > *:last-child {
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
+`;
+
+const ProfileDropdownIcon = styled.img`
+  height: 30px;
+  width: 30px;
+`;
+
+const ProfileDropdownItem = styled(Link)`
+  display: block;
+  padding: 10px 15px;
+  color: #fff;
+  font-size: 18px;
+  background-color: ${({ isPageActive }) => (isPageActive ? "#444" : "#333")};
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #555;
+  }
+`;
+
+const LogoutButton = styled.button`
+  width: 100%;
+  display: block;
+  padding: 13px 15px;
+  background-color: #333;
+  font-size: 18px;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #555;
+  }
+`;
+
+const LoginHeaderLinksContainer = styled.div`
+  display: flex;
+  gap: 30px;
+`;
+
+const LoginHeaderLink = styled(Link)`
+  text-decoration: none;
+  color: #fff;
+  font-size: 18px;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: ${({ isPageActive }) => (isPageActive ? "100%" : "0")};
+    height: 3px;
+    bottom: -2px;
+    left: 0;
+    background-color: #5c27b6;
+    transition: width 0.3s ease-in-out;
+  }
+
+  &:hover::after {
+    width: 100%;
   }
 `;
 
@@ -128,24 +296,6 @@ const SignInButton = styled(Link)`
   border-radius: 20px;
   cursor: pointer;
   text-decoration: none;
-  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
-
-  &:hover {
-    transform: scale(1.03);
-    background-color: #fff;
-    color: #000;
-  }
-`;
-
-const LogoutButton = styled.button`
-  color: #fff;
-  background-color: transparent;
-  border: none;
-  padding: 10px 15px;
-  font-weight: 500;
-  font-size: 18px;
-  border-radius: 20px;
-  cursor: pointer;
   transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
