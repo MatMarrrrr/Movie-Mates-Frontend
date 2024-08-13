@@ -3,20 +3,23 @@ import { useUser } from "../contexts/UserContext";
 import axios from "axios";
 import styled from "styled-components";
 import { Loader } from "../components/Loader";
+import buttonLoader from "../assets/buttonLoader.svg";
 import arrowBack from "../assets/arrowBack.svg";
 import arrowForward from "../assets/arrowForward.svg";
 
 export const MainPage = () => {
   const [movies, setMovies] = useState([]);
   const [moviesLoading, setMoviesLoading] = useState(true);
+  const [moreMoviesLoading, setMoreMoviesLoading] = useState(false);
   const { user, userToken } = useUser();
-  const apiURL = import.meta.env.VITE_API_URL;
   const [trendingScrollPosition, setTrendingScrollPosition] = useState(0);
+  const [trendingMoviesPage, setTrendingMoviesPage] = useState(1);
   const moviesListRef = useRef(null);
+  const apiURL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     axios
-      .get(`${apiURL}/movies/trending/day/1`, {
+      .get(`${apiURL}/movies/trending/day/${trendingMoviesPage}`, {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
@@ -28,14 +31,36 @@ export const MainPage = () => {
       });
   }, [apiURL, userToken]);
 
+  useEffect(() => {
+    setMoreMoviesLoading(true);
+    axios
+      .get(`${apiURL}/movies/trending/day/${trendingMoviesPage}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      })
+      .then((response) => {
+        setMovies((prevMovies) => [...prevMovies, ...response.data]);
+        setMoreMoviesLoading(false);
+      });
+  }, [trendingMoviesPage]);
+
   const handleScrollRight = () => {
     if (moviesListRef.current) {
-      const newtrendingScrollPosition = trendingScrollPosition + 350;
-      moviesListRef.current.scrollTo({
-        left: newtrendingScrollPosition,
-        behavior: "smooth",
-      });
-      setTrendingScrollPosition(newtrendingScrollPosition);
+      const newTrendingScrollPosition = trendingScrollPosition + 350;
+      const maxScrollLeft =
+        moviesListRef.current.scrollWidth - moviesListRef.current.clientWidth;
+
+      if (newTrendingScrollPosition >= maxScrollLeft) {
+        setMoreMoviesLoading(true);
+        setTrendingMoviesPage(trendingMoviesPage + 1);
+      } else {
+        moviesListRef.current.scrollTo({
+          left: newTrendingScrollPosition,
+          behavior: "smooth",
+        });
+        setTrendingScrollPosition(newTrendingScrollPosition);
+      }
     }
   };
 
@@ -49,10 +74,6 @@ export const MainPage = () => {
       setTrendingScrollPosition(newtrendingScrollPosition);
     }
   };
-
-  const maxScrollLeft = moviesListRef.current
-    ? moviesListRef.current.scrollWidth - moviesListRef.current.clientWidth
-    : 0;
 
   return (
     <Wrapper>
@@ -98,11 +119,13 @@ export const MainPage = () => {
                 </MovieContainer>
               ))}
             </MoviesList>
-            {trendingScrollPosition < maxScrollLeft && (
-              <ArrowForwardContainer onClick={handleScrollRight}>
+            <ArrowForwardContainer onClick={handleScrollRight}>
+              {moreMoviesLoading ? (
+                <ArrowIcon src={buttonLoader} />
+              ) : (
                 <ArrowIcon src={arrowForward} />
-              </ArrowForwardContainer>
-            )}
+              )}
+            </ArrowForwardContainer>
           </>
         ) : (
           <EmptyMessage>
