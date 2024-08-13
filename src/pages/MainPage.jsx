@@ -40,7 +40,17 @@ export const MainPage = () => {
         },
       })
       .then((response) => {
-        setMovies((prevMovies) => [...prevMovies, ...response.data]);
+        const newMovies = response.data;
+        const allMovies = [...movies, ...newMovies];
+
+        const uniqueMovies = allMovies.reduce((acc, current) => {
+          if (!acc.some((movie) => movie.id === current.id)) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
+
+        setMovies(uniqueMovies);
         setMoreMoviesLoading(false);
       });
   }, [trendingMoviesPage]);
