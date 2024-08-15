@@ -107,6 +107,10 @@ export const Wrapper = styled.div`
   min-height: calc(100vh - 80px);
   background-color: #080016;
   overflow: hidden;
+
+  @media (max-width: 600px) {
+    align-items: flex-start;
+  }
 `;
 
 export const Container = styled.div`
@@ -120,6 +124,18 @@ export const Container = styled.div`
   box-sizing: border-box;
   height: 700px;
   overflow: hidden;
+
+  @media (max-width: 950px) {
+    flex-direction: column;
+    min-height: 90%;
+    padding-bottom: 20px;
+  }
+
+  @media (max-width: 600px) {
+    width: 100%;
+    min-height: calc(100vh - 80px);
+    border-radius: 0;
+  }
 `;
 
 export const ProfileNavbar = styled.div`
@@ -129,22 +145,50 @@ export const ProfileNavbar = styled.div`
   height: 100%;
   background-color: #3c1a77;
   border-right: 2px solid #5c27b6;
+
+  @media (max-width: 950px) {
+    flex-direction: row;
+    width: 100%;
+    height: 50px;
+  }
+
+  @media (max-width: 600px) {
+    height: auto;
+    flex-direction: column;
+    border-right: none;
+    border-bottom: 1px solid #5c27b6;
+  }
 `;
 
 export const ProfileNavbarOption = styled.div`
   padding: 15px 20px;
   color: #fff;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 16px;
   transition: background-color 0.3s, color 0.3s;
   background-color: ${({ $isActive }) => ($isActive ? "#5c27b6" : "#3c1a77")};
+  border-bottom: 1px solid #5c27b6;
 
   &:hover {
     background-color: #5c27b6;
   }
 
-  &:not(:last-child) {
+  @media (max-width: 950px) {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px;
     border-bottom: 1px solid #5c27b6;
+
+    &:not(:last-child) {
+      border-right: 1px solid #5c27b6;
+    }
+  }
+
+  @media (max-width: 600px) {
+    padding: 15px;
   }
 `;
 
@@ -157,4 +201,13 @@ export const Content = styled.div`
   gap: 30px;
   justify-content: center;
   align-items: flex-start;
+
+  @media (max-width: 950px) {
+    padding: 20px;
+  }
+
+  @media (max-width: 600px) {
+    padding: 15px;
+    gap: 20px;
+  }
 `;

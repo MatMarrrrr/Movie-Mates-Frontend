@@ -104,17 +104,55 @@ export const Navbar = () => {
       <BurgerItems open={isBurgerOpen}>
         {!user ? (
           <>
-            <BurgerMenuItem onClick={handleBurgerMenuItemClick} to="/login">
+            <BurgerMenuItem
+              $isPageActive={location.pathname === "/login"}
+              onClick={handleBurgerMenuItemClick}
+              to="/login"
+            >
               Sign in
             </BurgerMenuItem>
-            <BurgerMenuItem onClick={handleBurgerMenuItemClick} to="/register">
+            <BurgerMenuItem
+              $isPageActive={location.pathname === "/register"}
+              onClick={handleBurgerMenuItemClick}
+              to="/register"
+            >
               Get Started
             </BurgerMenuItem>
           </>
         ) : (
-          <BurgerMenuItem as="button" onClick={handleLogoutClick}>
-            Logout
-          </BurgerMenuItem>
+          <>
+            <BurgerMenuItem
+              $isPageActive={location.pathname === "/films"}
+              onClick={handleBurgerMenuItemClick}
+              to="/films"
+            >
+              Films
+            </BurgerMenuItem>
+            <BurgerMenuItem
+              $isPageActive={location.pathname === "/tvseries"}
+              onClick={handleBurgerMenuItemClick}
+              to="/tvseries"
+            >
+              TV Series
+            </BurgerMenuItem>
+            <BurgerMenuItem
+              $isPageActive={location.pathname === "/search"}
+              onClick={handleBurgerMenuItemClick}
+              to="/search"
+            >
+              Search
+            </BurgerMenuItem>
+            <BurgerMenuItem
+              $isPageActive={location.pathname === "/profile"}
+              onClick={handleBurgerMenuItemClick}
+              to="/profile"
+            >
+              Profile
+            </BurgerMenuItem>
+            <BurgerMenuItem as="button" onClick={handleLogoutClick}>
+              Logout
+            </BurgerMenuItem>
+          </>
         )}
       </BurgerItems>
     </Wrapper>
@@ -265,6 +303,10 @@ const LogoutButton = styled.button`
 const LoginHeaderLinksContainer = styled.div`
   display: flex;
   gap: 30px;
+
+  @media (max-width: 770px) {
+    display: none;
+  }
 `;
 
 const LoginHeaderLink = styled(Link)`
@@ -343,9 +385,12 @@ const BurgerItems = styled.div`
 const BurgerMenuItem = styled(Link)`
   color: #fff;
   text-decoration: none;
-  background-color: #0f0f0f;
+  background-color: ${({ $isPageActive }) =>
+    $isPageActive ? "#2f2f2f" : "#0f0f0f"};
   padding: 22px;
   font-size: 20px;
+  border: none;
+  text-align: center;
 
   &:hover {
     background-color: #2f2f2f;
