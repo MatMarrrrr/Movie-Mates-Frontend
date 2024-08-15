@@ -14,6 +14,9 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const isAvatarImg = user ? user.avatar_url !== null : false;
+  const avatarLetter = user ? user.login.charAt(0).toUpperCase() : "";
+
   const handleBurgerClick = () => {
     setIsBurgerOpen(!isBurgerOpen);
   };
@@ -45,19 +48,19 @@ export const Navbar = () => {
           <LoginHeaderLinksContainer>
             <LoginHeaderLink
               to="/films"
-              isPageActive={location.pathname === "/films"}
+              $isPageActive={location.pathname === "/films"}
             >
               Films
             </LoginHeaderLink>
             <LoginHeaderLink
               to="/tvseries"
-              isPageActive={location.pathname === "/tvseries"}
+              $isPageActive={location.pathname === "/tvseries"}
             >
               TV Series
             </LoginHeaderLink>
             <LoginHeaderLink
               to="/search"
-              isPageActive={location.pathname === "/search"}
+              $isPageActive={location.pathname === "/search"}
             >
               Search
             </LoginHeaderLink>
@@ -66,18 +69,16 @@ export const Navbar = () => {
           <LoginButtonsContainer>
             <NicknameText>{user.login}</NicknameText>
             <ProfileContainer onClick={toggleDropdown}>
-              {user.avatar_url !== null ? (
+              {isAvatarImg ? (
                 <ProfileImage src={user.avatar_url} />
               ) : (
-                <ProfileLetter>
-                  {user.login.charAt(0).toUpperCase()}
-                </ProfileLetter>
+                <ProfileLetter>{avatarLetter}</ProfileLetter>
               )}
               <ProfileDropdownIcon src={dropdownIcon} />
-              <ProfileDropdown dropdownOpen={isDropdownOpen}>
+              <ProfileDropdown $dropdownOpen={isDropdownOpen}>
                 <ProfileDropdownItem
                   to="/profile"
-                  isPageActive={location.pathname === "/profile"}
+                  $isPageActive={location.pathname === "/profile"}
                   onClick={() => {
                     setIsDropdownOpen(false);
                   }}
@@ -209,10 +210,11 @@ const ProfileDropdown = styled.div`
   right: 0;
   width: 150px;
   border-radius: 8px;
-  transform: ${({ dropdownOpen }) => (dropdownOpen ? "scale(1)" : "scale(0)")};
+  transform: ${({ $dropdownOpen }) =>
+    $dropdownOpen ? "scale(1)" : "scale(0)"};
   transform-origin: top right;
   transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-  opacity: ${({ dropdownOpen }) => (dropdownOpen ? 1 : 0)};
+  opacity: ${({ $dropdownOpen }) => ($dropdownOpen ? 1 : 0)};
 
   & > *:first-child {
     border-top-right-radius: 8px;
@@ -235,7 +237,7 @@ const ProfileDropdownItem = styled(Link)`
   padding: 10px 15px;
   color: #fff;
   font-size: 18px;
-  background-color: ${({ isPageActive }) => (isPageActive ? "#444" : "#333")};
+  background-color: ${({ $isPageActive }) => ($isPageActive ? "#444" : "#333")};
   text-align: center;
   text-decoration: none;
   cursor: pointer;
@@ -274,7 +276,7 @@ const LoginHeaderLink = styled(Link)`
   &::after {
     content: "";
     position: absolute;
-    width: ${({ isPageActive }) => (isPageActive ? "100%" : "0")};
+    width: ${({ $isPageActive }) => ($isPageActive ? "100%" : "0")};
     height: 3px;
     bottom: -2px;
     left: 0;

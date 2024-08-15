@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useUser } from "../contexts/UserContext";
 import axios from "axios";
 import styled from "styled-components";
 import { Loader } from "../components/Loader";
