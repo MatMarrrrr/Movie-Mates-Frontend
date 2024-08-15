@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import { AccountDetails } from "../sections/AccountDetails";
 import { FriendsList } from "../sections/FriendsList";
 import { InviteFriends } from "../sections/InviteFriends";
@@ -14,12 +16,13 @@ export const ProfilePage = () => {
   const { user } = useUser();
   const navigate = useNavigate();
 
-
   useEffect(() => {
     if (!user) {
       navigate("/login");
       return;
     }
+
+    AOS.init({ duration: 700 });
 
     const updateSectionFromHash = () => {
       const hash = window.location.hash.replace("#", "");
@@ -48,7 +51,7 @@ export const ProfilePage = () => {
 
   return (
     <Wrapper>
-      <Container>
+      <Container data-aos="fade-up">
         <ProfileNavbar>
           <ProfileNavbarOption
             $isActive={["AccountDetails", "PasswordChange"].includes(section)}
@@ -103,6 +106,7 @@ export const Wrapper = styled.div`
   align-items: center;
   min-height: calc(100vh - 80px);
   background-color: #080016;
+  overflow: hidden;
 `;
 
 export const Container = styled.div`
@@ -111,7 +115,7 @@ export const Container = styled.div`
   align-items: flex-start;
   border-radius: 15px;
   text-align: left;
-  max-width: 900px;
+  max-width: 1000px;
   width: 90%;
   box-sizing: border-box;
   height: 700px;
@@ -152,5 +156,4 @@ export const Content = styled.div`
   flex-direction: column;
   gap: 30px;
   justify-content: center;
-  align-items: flex-start;
 `;

@@ -19,7 +19,7 @@ export const ProfileItems = styled.div`
 export const ProfileCenteredItem = styled.div`
   display: grid;
   justify-content: center;
-  margin-top: ${({ $isMarginTop = false }) => ($isMarginTop ? '10px' : '0px')};
+  margin-top: ${({ $isMarginTop = false }) => ($isMarginTop ? "10px" : "0px")};
 `;
 
 export const ProfileText = styled.p`
@@ -65,6 +65,7 @@ export const ProfileButton = styled.button`
 
   &:disabled {
     opacity: 0.6;
+    cursor: default;
   }
 `;
 

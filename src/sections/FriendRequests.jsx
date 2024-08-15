@@ -1,7 +1,5 @@
-import React from 'react'
+import React, { useEffect } from "react";
 
 export const FriendRequests = () => {
-  return (
-    <div>FriendRequests</div>
-  )
-}
+  return <div>FriendRequests</div>;
+};
