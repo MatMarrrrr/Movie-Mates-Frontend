@@ -163,6 +163,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: start;
   gap: 20px;
+  width: 100%;
 `;
 
 const SearchContainer = styled.div`

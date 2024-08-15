@@ -156,4 +156,5 @@ export const Content = styled.div`
   flex-direction: column;
   gap: 30px;
   justify-content: center;
+  align-items: flex-start;
 `;
