@@ -25,12 +25,30 @@ export const ProfileCenteredItem = styled.div`
 export const ProfileText = styled.p`
   font-size: 18px;
   min-width: 100px;
+
+  @media (max-width: 950px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 950px) {
+    font-size: 14px;
+  }
 `;
 
 export const ProfileImg = styled.img`
   height: 70px;
   width: 70px;
   border-radius: 50%;
+
+  @media (max-width: 950px) {
+    height: 60px;
+    width: 60px;
+  }
+
+  @media (max-width: 600px) {
+    height: 50px;
+    width: 50px;
+  }
 `;
 
 export const ProfileTextImg = styled.div`
@@ -43,6 +61,16 @@ export const ProfileTextImg = styled.div`
   align-items: center;
   background-color: #5c27b6;
   border-radius: 50%;
+
+  @media (max-width: 950px) {
+    height: 60px;
+    width: 60px;
+  }
+
+  @media (max-width: 600px) {
+    height: 50px;
+    width: 50px;
+  }
 `;
 
 export const ProfileButton = styled.button`
@@ -67,6 +95,15 @@ export const ProfileButton = styled.button`
     opacity: 0.6;
     cursor: default;
   }
+
+  @media (max-width: 950px) {
+    font-size: 15px;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 14px;
+    margin-left: 20px;
+  }
 `;
 
 export const ProfileButtonLoader = styled.img`
@@ -81,6 +118,10 @@ export const ProfileInput = styled.input`
   padding: 7px 20px;
   font-size: 16px;
   border-radius: 10px;
+  flex-grow: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  width: 100%;
 `;
 
 export const ProfileBackIconContainer = styled.div`

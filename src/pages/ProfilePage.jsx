@@ -201,9 +201,12 @@ export const Content = styled.div`
   gap: 30px;
   justify-content: center;
   align-items: flex-start;
+  box-sizing: border-box;
 
   @media (max-width: 950px) {
     padding: 20px;
+    justify-content: start;
+    width: 100%;
   }
 
   @media (max-width: 600px) {

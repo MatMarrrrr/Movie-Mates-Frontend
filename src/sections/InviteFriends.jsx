@@ -143,7 +143,7 @@ export const InviteFriends = () => {
                 )}
 
                 <ProfileText>{user.login}</ProfileText>
-                <ProfileText>{user.email}</ProfileText>
+                <ProfileEmailText>{user.email}</ProfileEmailText>
                 <ProfileButton
                   disabled={isRequestSent}
                   onClick={() => handleInviteClick(user.id)}
@@ -177,6 +177,10 @@ const SearchContainer = styled.div`
 const FullWidthProfileInput = styled(ProfileInput)`
   flex-grow: 1;
   width: auto;
+
+  @media (max-width: 600px) {
+    flex-grow: 0;
+  }
 `;
 
 const Content = styled.div`
@@ -185,6 +189,15 @@ const Content = styled.div`
   align-items: center;
   width: 100%;
   gap: 10px;
+
+  @media (max-width: 950px) {
+    max-height: 550px;
+    overflow-y: auto;
+  }
+
+  @media (max-width: 950px) {
+    max-height: 350px;
+  }
 `;
 
 const AccountContainer = styled.div`
@@ -221,4 +234,10 @@ const AccountAvatarLetter = styled.div`
 const NoResultsText = styled(ProfileText)`
   text-align: center;
   color: #888;
+`;
+
+const ProfileEmailText = styled(ProfileText)`
+  @media (max-width: 600px) {
+    display: none;
+  }
 `;
