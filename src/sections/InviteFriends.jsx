@@ -6,7 +6,14 @@ import {
   ProfileText,
   ProfileButton,
   ProfileInput,
+  AccountsContent,
+  AccountContainer,
+  AccountAvatar,
+  AccountAvatarLetter,
+  ProfileEmailText,
+  ProfileNoResultsText,
 } from "../styledComponents/ProfileComponents";
+import { useUser } from "../contexts/UserContext";
 
 export const InviteFriends = () => {
   const [query, setQuery] = useState("");
@@ -14,10 +21,27 @@ export const InviteFriends = () => {
   const [sentRequests, setSentRequests] = useState("");
   const [loadingFirstResults, setLoadingFirstResults] = useState(true);
   const [loadingSearchResults, setLoadingSearchResults] = useState(false);
+  const { user } = useUser();
   const apiURL = import.meta.env.VITE_API_URL;
 
   const handleQueryChange = (e) => {
     setQuery(e.target.value);
+  };
+
+  const fetchFriends = async () => {
+    const storedToken = localStorage.getItem("token");
+
+    try {
+      const response = await axios.get(`${apiURL}/user/friends`, {
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching first result:", error);
+    }
   };
 
   useEffect(() => {
@@ -30,6 +54,7 @@ export const InviteFriends = () => {
             Authorization: `Bearer ${storedToken}`,
           },
         });
+        console.log(response.data);
         setSentRequests(response.data.sent_requests);
       } catch (error) {
         console.error("Error fetching friend requests:", error);
@@ -48,14 +73,22 @@ export const InviteFriends = () => {
             limit: 5,
           },
         });
-        setSearchResults(response.data);
+
+        const friends = await fetchFriends();
+        console.log(friends);
+        setSearchResults(
+          response.data.filter(
+            (userData) =>
+              userData.id !== user.id &&
+              !friends.some((friend) => friend.id === userData.id)
+          )
+        );
         setLoadingFirstResults(false);
       } catch (error) {
         setLoadingFirstResults(false);
         console.error("Error fetching first result:", error);
       }
     };
-
     fetchFriendRequests().then(fetchFirstResult);
   }, []);
 
@@ -73,7 +106,16 @@ export const InviteFriends = () => {
           query: query,
         },
       });
-      setSearchResults(response.data);
+
+      const friends = await fetchFriends();
+
+      setSearchResults(
+        response.data.filter(
+          (userData) =>
+            userData.id !== user.id &&
+            !friends.some((friend) => friend.id === userData.id)
+        )
+      );
       setLoadingSearchResults(false);
     } catch (error) {
       setLoadingSearchResults(false);
@@ -116,13 +158,13 @@ export const InviteFriends = () => {
           Search
         </ProfileButton>
       </SearchContainer>
-      <Content>
+      <AccountsContent>
         {loadingFirstResults && <Loader />}
         {!loadingFirstResults && loadingSearchResults && <Loader />}{" "}
         {!loadingFirstResults &&
           !loadingSearchResults &&
           searchResults.length === 0 && (
-            <NoResultsText>No users found</NoResultsText>
+            <ProfileNoResultsText>No users found</ProfileNoResultsText>
           )}
         {!loadingFirstResults &&
           searchResults.length > 0 &&
@@ -153,7 +195,7 @@ export const InviteFriends = () => {
               </AccountContainer>
             );
           })}
-      </Content>
+      </AccountsContent>
     </Wrapper>
   );
 };
@@ -180,64 +222,5 @@ const FullWidthProfileInput = styled(ProfileInput)`
 
   @media (max-width: 600px) {
     flex-grow: 0;
-  }
-`;
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  gap: 10px;
-
-  @media (max-width: 950px) {
-    max-height: 550px;
-    overflow-y: auto;
-  }
-
-  @media (max-width: 950px) {
-    max-height: 350px;
-  }
-`;
-
-const AccountContainer = styled.div`
-  display: flex;
-  width: 100%;
-  gap: 20px;
-  justify-content: space-between;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  align-items: center;
-  box-sizing: border-box;
-`;
-
-const AccountAvatar = styled.img`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-`;
-
-const AccountAvatarLetter = styled.div`
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #007bff;
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  border-radius: 50%;
-`;
-
-const NoResultsText = styled(ProfileText)`
-  text-align: center;
-  color: #888;
-`;
-
-const ProfileEmailText = styled(ProfileText)`
-  @media (max-width: 600px) {
-    display: none;
   }
 `;

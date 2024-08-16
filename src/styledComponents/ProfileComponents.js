@@ -141,3 +141,72 @@ export const ProfileBackIconContainer = styled.div`
 export const ProfileBackIcon = styled.img`
   height: 40px;
 `;
+
+export const AccountsContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+
+  @media (max-width: 950px) {
+    max-height: 550px;
+    overflow-y: auto;
+  }
+
+  @media (max-width: 950px) {
+    max-height: 350px;
+  }
+`;
+
+export const AccountContainer = styled.div`
+  display: flex;
+  width: 100%;
+  gap: 20px;
+  justify-content: space-between;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  align-items: center;
+  box-sizing: border-box;
+`;
+
+export const AccountAvatar = styled.img`
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 50%;
+`;
+
+export const AccountAvatarLetter = styled.div`
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #007bff;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 50%;
+`;
+
+export const ProfileEmailText = styled(ProfileText)`
+  @media (max-width: 600px) {
+    display: none;
+  }
+`;
+
+export const ProfileDateText = styled(ProfileText)`
+  @media (max-width: 600px) {
+    display: none;
+  }
+`;
+
+export const ProfileNoResultsText = styled(ProfileText)`
+  text-align: center;
+  color: #888;
+`;
