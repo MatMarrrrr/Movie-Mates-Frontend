@@ -13,6 +13,7 @@ import { FilmsPage } from "./pages/FilmsPage";
 import { TvSeriesPage } from "./pages/TvSeriesPage";
 import { SearchPage } from "./pages/SearchPage";
 import { ProfilePage } from "./pages/ProfilePage";
+import AuthRoute from "./routes/AuthRoute";
 
 function App() {
   const { user, setUser, setUserToken, userLoading, setUserLoading } =
@@ -58,12 +59,32 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={user ? <MainPage /> : <LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/films" element={<FilmsPage />} />
-        <Route path="/tvseries" element={<TvSeriesPage />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route
+          path="/login"
+          element={<AuthRoute component={LoginPage} isAuthRequired={false} />}
+        />
+        <Route
+          path="/register"
+          element={
+            <AuthRoute component={RegisterPage} isAuthRequired={false} />
+          }
+        />
+        <Route
+          path="/films"
+          element={<AuthRoute component={FilmsPage} isAuthRequired={true} />}
+        />
+        <Route
+          path="/tvseries"
+          element={<AuthRoute component={TvSeriesPage} isAuthRequired={true} />}
+        />
+        <Route
+          path="/search"
+          element={<AuthRoute component={SearchPage} isAuthRequired={true} />}
+        />
+        <Route
+          path="/profile/*"
+          element={<AuthRoute component={ProfilePage} isAuthRequired={true} />}
+        />
         <Route path="/google-callback" element={<GoogleCallback />} />
       </Routes>
     </BrowserRouter>

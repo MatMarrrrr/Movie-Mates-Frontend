@@ -11,18 +11,20 @@ import {
 } from "../styledComponents/ProfileComponents";
 import arrowBackWhite from "../assets/arrowBackWhite.svg";
 import { useInfoModal } from "../contexts/InfoModalContext";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-export const PasswordChange = ({ setSection }) => {
+export const PasswordChange = () => {
   const [oldPasswordValue, setoldPasswordValue] = useState("");
   const [newPasswordValue, setNewPasswordValue] = useState("");
   const [repeatPasswordValue, setRepeatPasswordValue] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const { showModal } = useInfoModal();
+  const navigate = useNavigate();
   const apiURL = import.meta.env.VITE_API_URL;
 
   const handleBackClick = () => {
-    setSection("AccountDetails");
+    navigate(`/profile/AccountDetails`);
   };
 
   const handleChangeClick = async () => {

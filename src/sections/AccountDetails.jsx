@@ -12,10 +12,11 @@ import {
 } from "../styledComponents/ProfileComponents";
 import axios from "axios";
 import { useUser } from "../contexts/UserContext";
+import { useNavigate } from "react-router-dom";
 import { useInfoModal } from "../contexts/InfoModalContext";
 import buttonLoader from "../assets/buttonLoader.svg";
 
-export const AccountDetails = ({ setSection }) => {
+export const AccountDetails = () => {
   const { user, setUser } = useUser();
   const { showModal } = useInfoModal();
   const fileInputRef = useRef(null);
@@ -24,6 +25,7 @@ export const AccountDetails = ({ setSection }) => {
   const [loginChange, setLoginChange] = useState(false);
   const [avatarLoading, setAvatarLoading] = useState(false);
   const [loginChangeLoading, setLoginChangeLoading] = useState(false);
+  const navigate = useNavigate();
 
   const isAvatarImg = user.avatar_url !== null;
   const avatarLetter = user.login.charAt(0).toUpperCase();
@@ -100,7 +102,7 @@ export const AccountDetails = ({ setSection }) => {
   };
 
   const handleLoginUpdate = async () => {
-    if(loginValue === user.login){
+    if (loginValue === user.login) {
       setLoginChange(false);
       return;
     }
@@ -129,11 +131,11 @@ export const AccountDetails = ({ setSection }) => {
   };
 
   const handleEmailChangeClick = () => {
-    setSection("EmailChange");
+    navigate(`/profile/EmailChange`);
   };
 
   const handlePasswordChangeClick = () => {
-    setSection("PasswordChange");
+    navigate(`/profile/PasswordChange`);
   };
 
   return (
@@ -170,7 +172,10 @@ export const AccountDetails = ({ setSection }) => {
             />
           )}
         </ProfileItems>
-        <ProfileButton disabled={loginValue === ""} onClick={handleLoginChangeClick}>
+        <ProfileButton
+          disabled={loginValue === ""}
+          onClick={handleLoginChangeClick}
+        >
           {!loginChange ? "Change" : "Save"}
           {loginChangeLoading && <ProfileButtonLoader src={buttonLoader} />}
         </ProfileButton>

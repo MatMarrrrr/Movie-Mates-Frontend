@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, Routes, Route, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -9,90 +9,58 @@ import { InviteFriends } from "../sections/InviteFriends";
 import { FriendRequests } from "../sections/FriendRequests";
 import { PasswordChange } from "../sections/PasswordChange";
 import { EmailChange } from "../sections/EmailChange";
-import { useUser } from "../contexts/UserContext";
 
 export const ProfilePage = () => {
-  const [section, setSection] = useState("");
-  const { user } = useUser();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
     AOS.init({ duration: 700 });
-
-    const updateSectionFromHash = () => {
-      const hash = window.location.hash.replace("#", "");
-      if (hash) {
-        setSection(hash);
-      } else {
-        setSection("AccountDetails");
-        window.location.hash = "#AccountDetails";
-      }
-    };
-
-    updateSectionFromHash();
-
-    window.addEventListener("hashchange", updateSectionFromHash);
-
-    return () => {
-      window.removeEventListener("hashchange", updateSectionFromHash);
-    };
   }, []);
 
-  useEffect(() => {
-    if (section) {
-      window.location.hash = `#${section}`;
-    }
-  }, [section]);
+  const navigateToSection = (section) => {
+    navigate(`/profile/${section}`);
+  };
 
   return (
     <Wrapper>
       <Container data-aos="fade-up">
         <ProfileNavbar>
           <ProfileNavbarOption
-            $isActive={["AccountDetails", "PasswordChange"].includes(section)}
-            onClick={() => setSection("AccountDetails")}
+            $isActive={location.pathname.includes("AccountDetails")}
+            onClick={() => navigateToSection("AccountDetails")}
           >
             Account Details
           </ProfileNavbarOption>
           <ProfileNavbarOption
-            $isActive={section === "FriendsList"}
-            onClick={() => setSection("FriendsList")}
+            $isActive={location.pathname.includes("FriendsList")}
+            onClick={() => navigateToSection("FriendsList")}
           >
             Friends List
           </ProfileNavbarOption>
           <ProfileNavbarOption
-            $isActive={section === "InviteFriends"}
-            onClick={() => setSection("InviteFriends")}
+            $isActive={location.pathname.includes("InviteFriends")}
+            onClick={() => navigateToSection("InviteFriends")}
           >
             Invite Friends
           </ProfileNavbarOption>
           <ProfileNavbarOption
-            $isActive={section === "FriendRequests"}
-            onClick={() => setSection("FriendRequests")}
+            $isActive={location.pathname.includes("FriendRequests")}
+            onClick={() => navigateToSection("FriendRequests")}
           >
             Friend Requests
           </ProfileNavbarOption>
         </ProfileNavbar>
         <Content>
-          {section === "AccountDetails" && (
-            <AccountDetails setSection={setSection} />
-          )}
-          {section === "FriendsList" && <FriendsList setSection={setSection} />}
-          {section === "InviteFriends" && (
-            <InviteFriends setSection={setSection} />
-          )}
-          {section === "FriendRequests" && (
-            <FriendRequests setSection={setSection} />
-          )}
-          {section === "PasswordChange" && (
-            <PasswordChange setSection={setSection} />
-          )}
-          {section === "EmailChange" && <EmailChange setSection={setSection} />}
+          <Routes>
+            <Route path="AccountDetails" element={<AccountDetails />} />
+            <Route path="FriendsList" element={<FriendsList />} />
+            <Route path="InviteFriends" element={<InviteFriends />} />
+            <Route path="FriendRequests" element={<FriendRequests />} />
+            <Route path="PasswordChange" element={<PasswordChange />} />
+            <Route path="EmailChange" element={<EmailChange />} />
+            <Route path="*" element={<AccountDetails />} />
+          </Routes>
         </Content>
       </Container>
     </Wrapper>

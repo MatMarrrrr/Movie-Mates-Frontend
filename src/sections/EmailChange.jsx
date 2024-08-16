@@ -12,17 +12,19 @@ import {
 import arrowBackWhite from "../assets/arrowBackWhite.svg";
 import { useInfoModal } from "../contexts/InfoModalContext";
 import { useUser } from "../contexts/UserContext";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-export const EmailChange = ({ setSection }) => {
+export const EmailChange = () => {
   const [emailError, setEmailError] = useState("");
   const [emailValue, setEmailValue] = useState("");
   const { showModal } = useInfoModal();
   const { user } = useUser();
+  const navigate = useNavigate();
   const apiURL = import.meta.env.VITE_API_URL;
 
   const handleBackClick = () => {
-    setSection("AccountDetails");
+    navigate(`/profile/AccountDetails`);
   };
 
   const validateEmail = (email) => {
