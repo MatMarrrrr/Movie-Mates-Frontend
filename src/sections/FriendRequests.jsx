@@ -11,6 +11,9 @@ import {
   AccountAvatarLetter,
   ProfileDateText,
   ProfileNoResultsText,
+  ButtonsContainer,
+  AcceptButton,
+  DeclineButton,
 } from "../styledComponents/ProfileComponents";
 
 export const FriendRequests = () => {
@@ -206,29 +209,6 @@ const RequestTypeButton = styled.button`
 
   &:hover {
     transform: scale(1.03);
-  }
-`;
-
-const ButtonsContainer = styled.div`
-  display: flex;
-  gap: 20px;
-`;
-
-const AcceptButton = styled(ProfileButton)`
-  background-color: #097409;
-
-  @media (max-width: 600px) {
-    font-size: 14px;
-    margin-left: 0;
-  }
-`;
-
-const DeclineButton = styled(ProfileButton)`
-  background-color: #a40c0c;
-
-  @media (max-width: 600px) {
-    font-size: 14px;
-    margin-left: 0;
   }
 `;
 

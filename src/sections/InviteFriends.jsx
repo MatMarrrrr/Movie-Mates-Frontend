@@ -12,16 +12,19 @@ import {
   AccountAvatarLetter,
   ProfileEmailText,
   ProfileNoResultsText,
+  ButtonsContainer,
+  AcceptButton,
+  DeclineButton,
 } from "../styledComponents/ProfileComponents";
-import { useUser } from "../contexts/UserContext";
 
 export const InviteFriends = () => {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [sentRequests, setSentRequests] = useState("");
+  const [sentRequests, setSentRequests] = useState([]);
+  const [receivedRequests, setReceivedRequests] = useState([]);
+  const [friends, setFriends] = useState([]);
   const [loadingFirstResults, setLoadingFirstResults] = useState(true);
   const [loadingSearchResults, setLoadingSearchResults] = useState(false);
-  const { user } = useUser();
   const apiURL = import.meta.env.VITE_API_URL;
 
   const handleQueryChange = (e) => {
@@ -38,59 +41,58 @@ export const InviteFriends = () => {
         },
       });
 
+      setFriends(response.data);
       return response.data;
     } catch (error) {
-      console.error("Error fetching first result:", error);
+      console.error("Error fetching friends:", error);
+      return [];
     }
   };
 
-  useEffect(() => {
-    const fetchFriendRequests = async () => {
-      const storedToken = localStorage.getItem("token");
+  const fetchFriendRequests = async () => {
+    const storedToken = localStorage.getItem("token");
 
-      try {
-        const response = await axios.get(`${apiURL}/friend-requests`, {
-          headers: {
-            Authorization: `Bearer ${storedToken}`,
-          },
-        });
-        console.log(response.data);
-        setSentRequests(response.data.sent_requests);
-      } catch (error) {
-        console.error("Error fetching friend requests:", error);
-      }
-    };
+    try {
+      const response = await axios.get(`${apiURL}/friend-requests`, {
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+        },
+        params: {
+          status: "pending",
+        },
+      });
+      setSentRequests(response.data.sent_requests);
+      setReceivedRequests(response.data.received_requests);
+    } catch (error) {
+      console.error("Error fetching friend requests:", error);
+    }
+  };
 
-    const fetchFirstResult = async () => {
-      const storedToken = localStorage.getItem("token");
+  const fetchFirstResult = async (currentFriends) => {
+    const storedToken = localStorage.getItem("token");
 
-      try {
-        const response = await axios.get(`${apiURL}/user/all`, {
-          headers: {
-            Authorization: `Bearer ${storedToken}`,
-          },
-          params: {
-            limit: 5,
-          },
-        });
+    try {
+      const response = await axios.get(`${apiURL}/user/all`, {
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+        },
+        params: {
+          limit: 5,
+        },
+      });
 
-        const friends = await fetchFriends();
-        console.log(friends);
-        setSearchResults(
-          response.data.filter(
-            (userData) =>
-              userData.id !== user.id &&
-              !friends.some((friend) => friend.id === userData.id)
-          )
-        );
-        setLoadingFirstResults(false);
-      } catch (error) {
-        setLoadingFirstResults(false);
-        console.error("Error fetching first result:", error);
-      }
-    };
-    fetchFriendRequests().then(fetchFirstResult);
-  }, []);
+      setSearchResults(
+        response.data.filter(
+          (userData) =>
+            !currentFriends.some((friend) => friend.id === userData.id)
+        )
+      );
+    } catch (error) {
+      console.error("Error fetching first result:", error);
+    } finally {
+      setLoadingFirstResults(false);
+    }
+  };
 
   const handleSearchClick = async () => {
     const storedToken = localStorage.getItem("token");
@@ -107,13 +109,9 @@ export const InviteFriends = () => {
         },
       });
 
-      const friends = await fetchFriends();
-
       setSearchResults(
         response.data.filter(
-          (userData) =>
-            userData.id !== user.id &&
-            !friends.some((friend) => friend.id === userData.id)
+          (userData) => !friends.some((friend) => friend.id === userData.id)
         )
       );
       setLoadingSearchResults(false);
@@ -146,6 +144,77 @@ export const InviteFriends = () => {
       });
   };
 
+  const changeRequestStatus = async (requestId, status) => {
+    const storedToken = localStorage.getItem("token");
+
+    try {
+      const updatedRequests = receivedRequests.map((request) => {
+        if (request.id === requestId) {
+          request.status = status;
+        }
+        return request;
+      });
+      setReceivedRequests(updatedRequests);
+
+      axios.patch(
+        `${apiURL}/friend-requests/${requestId}`,
+        { status: status },
+        {
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error while changing request status:", error);
+    }
+  };
+
+  const handleAcceptClick = async (requestId, senderId) => {
+    try {
+      await changeRequestStatus(requestId, "accepted");
+
+      setReceivedRequests((prevRequests) =>
+        prevRequests.filter((request) => request.id !== requestId)
+      );
+
+      setSearchResults((prevResults) =>
+        prevResults.filter((user) => user.id !== senderId)
+      );
+    } catch (error) {
+      console.error("Error accepting friend request:", error);
+    }
+  };
+
+  const handleDeclineClick = async (requestId, senderId) => {
+    try {
+      await changeRequestStatus(requestId, "declined");
+      setReceivedRequests((prevRequests) =>
+        prevRequests.map((request) =>
+          request.id === requestId
+            ? { ...request, status: "declined" }
+            : request
+        )
+      );
+
+      setSentRequests((prevRequests) =>
+        prevRequests.filter((request) => request.recipient_id !== senderId)
+      );
+    } catch (error) {
+      console.error("Error declining friend request:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const currentFriends = await fetchFriends();
+      await fetchFriendRequests();
+      await fetchFirstResult(currentFriends);
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <Wrapper>
       <SearchContainer>
@@ -159,13 +228,14 @@ export const InviteFriends = () => {
         </ProfileButton>
       </SearchContainer>
       <AccountsContent>
-        {loadingFirstResults && <Loader />}
-        {!loadingFirstResults && loadingSearchResults && <Loader />}{" "}
+        {(loadingFirstResults || loadingSearchResults) && <Loader />}
+
         {!loadingFirstResults &&
           !loadingSearchResults &&
           searchResults.length === 0 && (
             <ProfileNoResultsText>No users found</ProfileNoResultsText>
           )}
+
         {!loadingFirstResults &&
           searchResults.length > 0 &&
           searchResults.map((user) => {
@@ -173,7 +243,12 @@ export const InviteFriends = () => {
               (request) => request.recipient_id === user.id
             );
 
-            const isAvatarImg = user.avatar_url !== null;
+            const pendingRequest = receivedRequests.find(
+              (request) =>
+                request.sender_id === user.id && request.status === "pending"
+            );
+
+            const isAvatarImg = Boolean(user.avatar_url);
             const avatarLetter = user.login.charAt(0).toUpperCase();
 
             return (
@@ -186,12 +261,31 @@ export const InviteFriends = () => {
 
                 <ProfileText>{user.login}</ProfileText>
                 <ProfileEmailText>{user.email}</ProfileEmailText>
-                <ProfileButton
-                  disabled={isRequestSent}
-                  onClick={() => handleInviteClick(user.id)}
-                >
-                  {isRequestSent ? "Invited" : "Invite"}
-                </ProfileButton>
+                {!pendingRequest ? (
+                  <ProfileButton
+                    disabled={isRequestSent}
+                    onClick={() => handleInviteClick(user.id)}
+                  >
+                    {isRequestSent ? "Invited" : "Invite"}
+                  </ProfileButton>
+                ) : (
+                  <ButtonsContainer>
+                    <AcceptButton
+                      onClick={() =>
+                        handleAcceptClick(pendingRequest.id, user.id)
+                      }
+                    >
+                      Accept
+                    </AcceptButton>
+                    <DeclineButton
+                      onClick={() =>
+                        handleDeclineClick(pendingRequest.id, user.id)
+                      }
+                    >
+                      Decline
+                    </DeclineButton>
+                  </ButtonsContainer>
+                )}
               </AccountContainer>
             );
           })}

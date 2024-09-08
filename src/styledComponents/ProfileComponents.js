@@ -24,7 +24,10 @@ export const ProfileCenteredItem = styled.div`
 
 export const ProfileText = styled.p`
   font-size: 18px;
-  min-width: 100px;
+  width: 140px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   @media (max-width: 950px) {
     font-size: 16px;
@@ -86,6 +89,7 @@ export const ProfileButton = styled.button`
   cursor: pointer;
   font-size: 16px;
   transition: transform 0.2s;
+  margin-left: auto;
 
   &:hover {
     transform: ${({ disabled }) => (disabled ? "none" : "scale(1.05)")};
@@ -163,7 +167,6 @@ export const AccountContainer = styled.div`
   display: flex;
   width: 100%;
   gap: 20px;
-  justify-content: space-between;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -195,9 +198,20 @@ export const AccountAvatarLetter = styled.div`
 `;
 
 export const ProfileEmailText = styled(ProfileText)`
+  flex-grow: 1;
+  width: 220px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
   @media (max-width: 600px) {
     display: none;
   }
+`;
+
+export const FriendsHeader = styled.h1`
+  font-size: 24px;
+  text-align: center;
 `;
 
 export const ProfileDateText = styled(ProfileText)`
@@ -209,4 +223,28 @@ export const ProfileDateText = styled(ProfileText)`
 export const ProfileNoResultsText = styled(ProfileText)`
   text-align: center;
   color: #888;
+`;
+
+export const ButtonsContainer = styled.div`
+  display: flex;
+  gap: 20px;
+  margin-left: auto;
+`;
+
+export const AcceptButton = styled(ProfileButton)`
+  background-color: #097409;
+
+  @media (max-width: 600px) {
+    font-size: 14px;
+    margin-left: 0;
+  }
+`;
+
+export const DeclineButton = styled(ProfileButton)`
+  background-color: #a40c0c;
+
+  @media (max-width: 600px) {
+    font-size: 14px;
+    margin-left: 0;
+  }
 `;
